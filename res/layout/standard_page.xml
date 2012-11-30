@@ -8,16 +8,22 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
         
+        <TextView
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        
         <TextView 
+            android:id="@+id/text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="hello world" />
         
-        <Button 
-            android:id="@+id/btnNext1"
+        <LinearLayout 
+            android:id="@+id/choice_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="NEXT 1" />
+            android:orientation="vertical" />
         
     </LinearLayout>
 

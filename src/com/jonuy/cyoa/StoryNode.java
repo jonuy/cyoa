@@ -1,7 +1,9 @@
 package com.jonuy.cyoa;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class StoryNode implements Serializable {
@@ -14,13 +16,13 @@ public class StoryNode implements Serializable {
 	private int numChoices;
 	private Constants.PageType pageType;
 	private String text;
-	private Map<String,UserChoice> userChoices;
+	private List<UserChoice> userChoices;
 	
 	public StoryNode() {}
 	
 	public StoryNode(String[] csvLine) {
 		pageId = csvLine[0];
-		pageType = getPageType(csvLine[1]);
+		pageType = translatePageType(csvLine[1]);
 		header = csvLine[2];
 		text = csvLine[3];
 		images = separateBySemicolons(csvLine[4]);
@@ -28,10 +30,10 @@ public class StoryNode implements Serializable {
 		numChoices = Integer.parseInt(csvLine[5]);
 		String[] choicesTexts = separateBySemicolons(csvLine[6]);
 		String[] choiceDestinations = separateBySemicolons(csvLine[7]); 
-		userChoices = new HashMap<String,UserChoice>();
+		userChoices = new ArrayList<UserChoice>();
 		for (int i = 0; i < numChoices; i++) {
 			UserChoice uc = new UserChoice(choiceDestinations[i], choicesTexts[i]);
-			userChoices.put(choiceDestinations[i], uc);
+			userChoices.add(uc);
 		}
 		
 		choiceTime = csvLine[8].length() > 0 ? Integer.parseInt(csvLine[8]) : 0;
@@ -53,7 +55,11 @@ public class StoryNode implements Serializable {
 		return pageId;
 	}
 	
-	public Constants.PageType getPageType(String val) {
+	public Constants.PageType getPageType() {
+		return pageType;
+	}
+	
+	public Constants.PageType translatePageType(String val) {
 		if (val.compareTo("standard-image") == 0) {
 			return Constants.PageType.STANDARD_IMAGE;
 		}
@@ -78,8 +84,30 @@ public class StoryNode implements Serializable {
 		return text;
 	}
 	
-	public Map<String,UserChoice> getUserChoices() {
-		return userChoices;
+	public int getNumChoices() {
+		return numChoices;
+	}
+	
+	public UserChoice getUserChoiceById(String _pageId) {
+		if (!_pageId.isEmpty()) {
+			for (int i = 0; i < userChoices.size(); i++) {
+				UserChoice uc = userChoices.get(i);
+				if (_pageId.compareTo(uc.getPageId()) == 0) {
+					return uc;
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	public UserChoice getUserChoiceByIndex(int index) {
+		try {
+			return userChoices.get(index);
+		}
+		catch(IndexOutOfBoundsException e) {
+			return null;
+		}
 	}
 	
 	private String[] separateBySemicolons(String val) {
@@ -95,8 +123,10 @@ public class StoryNode implements Serializable {
 		}
 		
 		String choicesString = "";
-		for (Map.Entry<String, UserChoice> entry : userChoices.entrySet()) {
-			choicesString += entry.getKey() + ":" + entry.getValue().toString() + ";";
+		Iterator<UserChoice> ucIter = userChoices.iterator();
+		while (ucIter.hasNext()) {
+			UserChoice uc = ucIter.next();
+			choicesString += uc.toString() + ";";
 		}
 		
 		return "pageId = " + pageId + "\n"
@@ -107,38 +137,5 @@ public class StoryNode implements Serializable {
 				+ " - numChoices = " + numChoices + "\n"
 				+ " - choices = " + choicesString + "\n"
 				+ " - choiceTime = " + choiceTime + "\n";
-	}
-	
-	private class UserChoice implements Serializable {
-		private static final long serialVersionUID = -6305653994169433601L;
-		private String pageId;
-		private String text;
-		private StoryNode node;
-		
-		public UserChoice(String _pageId, String _text) {
-			this.pageId = _pageId;
-			this.text = _text;
-		}
-		
-		public void setNode(StoryNode _node) {
-			node = _node;
-		}
-		
-		public String getNodeId() {
-			return this.pageId;
-		}
-		
-		public String getText() {
-			return this.pageId;
-		}
-		
-		public StoryNode getNode() {
-			return this.node;
-		}
-		
-		@Override
-		public String toString() {
-			return "["+this.pageId+","+this.text+"]";
-		}
 	}
 }

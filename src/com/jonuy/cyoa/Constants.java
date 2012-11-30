@@ -13,6 +13,7 @@ public final class Constants {
 	
 	public static class BundleId {
 		public static String STORY = "STORY";
+		public static String PAGE_ID = "PAGE_ID";
 	}
 	
 	public static class SerialVersionUID {
