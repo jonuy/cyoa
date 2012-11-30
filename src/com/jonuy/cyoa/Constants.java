@@ -19,6 +19,7 @@ public final class Constants {
 	public static class SerialVersionUID {
 		public static long STORY = 1L;
 		public static long STORY_NODE = 2L;
+		public static long USER_CHOICE = 3L;
 	}
 
 	private Constants() {

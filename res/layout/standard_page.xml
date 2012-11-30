@@ -16,8 +16,7 @@
         <TextView 
             android:id="@+id/text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="hello world" />
+            android:layout_height="wrap_content" />
         
         <LinearLayout 
             android:id="@+id/choice_container"

@@ -12,7 +12,7 @@ public class StoryNode implements Serializable {
 	private int choiceTime;
 	private String header;
 	private String[] images;
-	private String pageId;
+	private int pageId;
 	private int numChoices;
 	private Constants.PageType pageType;
 	private String text;
@@ -21,7 +21,7 @@ public class StoryNode implements Serializable {
 	public StoryNode() {}
 	
 	public StoryNode(String[] csvLine) {
-		pageId = csvLine[0];
+		pageId = Integer.parseInt(csvLine[0]);
 		pageType = translatePageType(csvLine[1]);
 		header = csvLine[2];
 		text = csvLine[3];
@@ -32,7 +32,7 @@ public class StoryNode implements Serializable {
 		String[] choiceDestinations = separateBySemicolons(csvLine[7]); 
 		userChoices = new ArrayList<UserChoice>();
 		for (int i = 0; i < numChoices; i++) {
-			UserChoice uc = new UserChoice(choiceDestinations[i], choicesTexts[i]);
+			UserChoice uc = new UserChoice(Integer.parseInt(choiceDestinations[i]), choicesTexts[i]);
 			userChoices.add(uc);
 		}
 		
@@ -51,7 +51,7 @@ public class StoryNode implements Serializable {
 		return images;
 	}
 	
-	public String getPageId() {
+	public int getPageId() {
 		return pageId;
 	}
 	
@@ -88,13 +88,11 @@ public class StoryNode implements Serializable {
 		return numChoices;
 	}
 	
-	public UserChoice getUserChoiceById(String _pageId) {
-		if (!_pageId.isEmpty()) {
-			for (int i = 0; i < userChoices.size(); i++) {
-				UserChoice uc = userChoices.get(i);
-				if (_pageId.compareTo(uc.getPageId()) == 0) {
-					return uc;
-				}
+	public UserChoice getUserChoiceById(int _pageId) {
+		for (int i = 0; i < userChoices.size(); i++) {
+			UserChoice uc = userChoices.get(i);
+			if (_pageId == uc.getPageId()) {
+				return uc;
 			}
 		}
 		
