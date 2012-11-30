@@ -10,7 +10,7 @@ public class StoryNode implements Serializable {
 	private int choiceTime;
 	private String header;
 	private String[] images;
-	private String nodeId;
+	private String pageId;
 	private int numChoices;
 	private Constants.PageType pageType;
 	private String text;
@@ -19,7 +19,7 @@ public class StoryNode implements Serializable {
 	public StoryNode() {}
 	
 	public StoryNode(String[] csvLine) {
-		nodeId = csvLine[0];
+		pageId = csvLine[0];
 		pageType = getPageType(csvLine[1]);
 		header = csvLine[2];
 		text = csvLine[3];
@@ -49,8 +49,8 @@ public class StoryNode implements Serializable {
 		return images;
 	}
 	
-	public String getNodeId() {
-		return nodeId;
+	public String getPageId() {
+		return pageId;
 	}
 	
 	public Constants.PageType getPageType(String val) {
@@ -87,10 +87,6 @@ public class StoryNode implements Serializable {
 		return tokens;
 	}
 	
-	public void setUserChoiceNode(String _nodeId, StoryNode _node) {
-		
-	}
-	
 	@Override
 	public String toString() {
 		String imagesString = "";
@@ -103,7 +99,7 @@ public class StoryNode implements Serializable {
 			choicesString += entry.getKey() + ":" + entry.getValue().toString() + ";";
 		}
 		
-		return "nodeId = " + nodeId + "\n"
+		return "pageId = " + pageId + "\n"
 				+ " - type = " + pageType + "\n"
 				+ " - header = " + header + "\n"
 				+ " - text = " + text + "\n"
@@ -115,12 +111,12 @@ public class StoryNode implements Serializable {
 	
 	private class UserChoice implements Serializable {
 		private static final long serialVersionUID = -6305653994169433601L;
-		private String nodeId;
+		private String pageId;
 		private String text;
 		private StoryNode node;
 		
-		public UserChoice(String _nodeId, String _text) {
-			this.nodeId = _nodeId;
+		public UserChoice(String _pageId, String _text) {
+			this.pageId = _pageId;
 			this.text = _text;
 		}
 		
@@ -129,11 +125,11 @@ public class StoryNode implements Serializable {
 		}
 		
 		public String getNodeId() {
-			return this.nodeId;
+			return this.pageId;
 		}
 		
 		public String getText() {
-			return this.nodeId;
+			return this.pageId;
 		}
 		
 		public StoryNode getNode() {
@@ -142,7 +138,7 @@ public class StoryNode implements Serializable {
 		
 		@Override
 		public String toString() {
-			return "["+this.nodeId+","+this.text+"]";
+			return "["+this.pageId+","+this.text+"]";
 		}
 	}
 }

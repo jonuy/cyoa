@@ -41,10 +41,10 @@ public class Story implements Serializable {
 		}
 	}
 	
-	public StoryNode getPage(String nodeId) {
+	public StoryNode getPage(String pageId) {
 		for (int i = 0; i < pages.size(); i++) {
 			StoryNode page = pages.get(i); 
-			if (nodeId.compareTo(page.getNodeId()) == 0) {
+			if (pageId.compareTo(page.getPageId()) == 0) {
 				return page;
 			}
 		}
