@@ -3,12 +3,15 @@ package com.jonuy.cyoa;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-public class Story {
+public class Story implements Serializable {
+	
+	private static final long serialVersionUID = Constants.SerialVersionUID.STORY;
 	
 	// TODO: eventually will want to store pages into a Tree-like structure
 	private List<StoryNode> pages;
@@ -41,7 +44,7 @@ public class Story {
 	public StoryNode getPage(String nodeId) {
 		for (int i = 0; i < pages.size(); i++) {
 			StoryNode page = pages.get(i); 
-			if (page.getNodeId() == nodeId) {
+			if (nodeId.compareTo(page.getNodeId()) == 0) {
 				return page;
 			}
 		}
@@ -50,7 +53,7 @@ public class Story {
 	}
 	
 	public String getFirstPageId() {
-		return "0";
+		return "1";
 	}
 	
 	public StoryNode getFirstPage() {

@@ -1,10 +1,12 @@
 package com.jonuy.cyoa;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class StoryNode {
-
+public class StoryNode implements Serializable {
+	
+	private static final long serialVersionUID = Constants.SerialVersionUID.STORY_NODE;
 	private int choiceTime;
 	private String header;
 	private String[] images;
@@ -52,19 +54,19 @@ public class StoryNode {
 	}
 	
 	public Constants.PageType getPageType(String val) {
-		if (val == "standard-image") {
+		if (val.compareTo("standard-image") == 0) {
 			return Constants.PageType.STANDARD_IMAGE;
 		}
-		else if (val == "choice") {
+		else if (val.compareTo("choice") == 0) {
 			return Constants.PageType.CHOICE;
 		}
-		else if (val == "choice-image") {
+		else if (val.compareTo("choice-image") == 0) {
 			return Constants.PageType.CHOICE_IMAGE;
 		}
-		else if (val == "choice-time") {
+		else if (val.compareTo("choice-time") == 0) {
 			return Constants.PageType.CHOICE_TIME;
 		}
-		else if (val == "end") {
+		else if (val.compareTo("end") == 0) {
 			return Constants.PageType.END;
 		}
 		else {
@@ -111,7 +113,8 @@ public class StoryNode {
 				+ " - choiceTime = " + choiceTime + "\n";
 	}
 	
-	private class UserChoice {
+	private class UserChoice implements Serializable {
+		private static final long serialVersionUID = -6305653994169433601L;
 		private String nodeId;
 		private String text;
 		private StoryNode node;

@@ -20,24 +20,17 @@ public class InitialActivity extends Activity {
 		setContentView(R.layout.initial_page);
 		
 		try {
-			AssetManager am = getAssets();
-			InputStream is = am.open("story_data/test-story.csv");
+			InputStream is = getAssets().open("story_data/test-story.csv");
 			
 			selectedStory = new Story();
 			selectedStory.loadStory(is);
-			
-			//am.close();
 		}
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		// TODO: save to Shared Preferences cache
-		// TODO: load story from cache if it's there
 	}
 	
 	public void beginStory(View v) {
-		Log.v("story", "begin story");
 		startActivity(BasePage.getNewIntent(this, selectedStory, selectedStory.getFirstPageId()));
 	}
 }

@@ -10,6 +10,15 @@ public final class Constants {
 		CHOICE_TIME,
 		END
 	};
+	
+	public static class BundleId {
+		public static String STORY = "STORY";
+	}
+	
+	public static class SerialVersionUID {
+		public static long STORY = 1L;
+		public static long STORY_NODE = 2L;
+	}
 
 	private Constants() {
 		throw new AssertionError();
