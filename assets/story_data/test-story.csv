@@ -1,0 +1,7 @@
+node-id,type,header,text,images,num-choices,choices-text,destination-node,time
+1,standard,Standard 1,Standard 1 Text,,2,"Next;Ok, cool",2;2,
+2,standard,Standard 2,Standard 2 Text,,1,HAHA,3,
+3,choice,Choice 3,Choice 3 Text,,2,"Yes, let's go;No, that's foolish",4;5,
+4,standard-image,Standard 4,Standard 4 Text,,1,Go,6,
+5,standard-image,Standard 5,Standard 5 Text,,1,Go,6,
+6,end,End,End Page Text,,0,,,
