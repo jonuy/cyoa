@@ -5,6 +5,7 @@ import com.jonuy.cyoa.Constants.PageType;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -37,6 +38,8 @@ public class BasePage extends Activity {
 	}
 	
 	protected void setPageContent() {
+		Typeface fontHVD = Typeface.createFromAsset(getAssets(), "fonts/HVD_Comic_Serif_Pro.otf");
+		
 		Constants.PageType pageType = currentPage.getPageType();
 		
 		if (pageType == Constants.PageType.STANDARD
@@ -45,9 +48,11 @@ public class BasePage extends Activity {
 			
 			TextView tvHeader = (TextView)findViewById(R.id.header);
 			tvHeader.setText(currentPage.getHeader());
+			tvHeader.setTypeface(fontHVD);
 			
 			TextView tvText = (TextView)findViewById(R.id.text);
 			tvText.setText(currentPage.getText());
+			tvText.setTypeface(fontHVD);
 			
 			LinearLayout llChoices = (LinearLayout)findViewById(R.id.choice_container);
 			UserChoiceClickListener ucClickListener = new UserChoiceClickListener();
@@ -56,6 +61,7 @@ public class BasePage extends Activity {
 				
 				Button button = new Button(this);
 				button.setText(uc.getText());
+				button.setTypeface(fontHVD);
 				button.setId(uc.getPageId());
 				button.setOnClickListener(ucClickListener);
 				llChoices.addView(button);
