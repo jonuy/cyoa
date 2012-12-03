@@ -4,10 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.content.res.AssetManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 public class InitialActivity extends Activity {

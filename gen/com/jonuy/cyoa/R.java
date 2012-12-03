@@ -11,16 +11,17 @@ public final class R {
     public static final class anim {
         public static final int slide_in_down=0x7f040000;
         public static final int slide_in_left_accelerate_decelerate=0x7f040001;
-        public static final int slide_in_up=0x7f040002;
-        public static final int slide_out_down=0x7f040003;
-        public static final int slide_out_left_accelerate_decelerate=0x7f040004;
-        public static final int slide_out_up=0x7f040005;
+        public static final int slide_in_left_overshoot=0x7f040002;
+        public static final int slide_in_up=0x7f040003;
+        public static final int slide_out_down=0x7f040004;
+        public static final int slide_out_left_accelerate_decelerate=0x7f040005;
+        public static final int slide_out_left_overshoot=0x7f040006;
+        public static final int slide_out_up=0x7f040007;
     }
     public static final class attr {
     }
     public static final class drawable {
-        public static final int black_parchment_paper_texture_450x450=0x7f020000;
-        public static final int ic_launcher=0x7f020001;
+        public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
         public static final int choice_container=0x7f070002;
@@ -52,5 +53,8 @@ public final class R {
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f060001;
+        public static final int StoryHeader=0x7f060002;
+        public static final int StoryText=0x7f060003;
+        public static final int UserChoiceButton=0x7f060004;
     }
 }

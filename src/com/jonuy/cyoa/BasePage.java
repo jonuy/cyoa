@@ -1,13 +1,10 @@
 package com.jonuy.cyoa;
 
-import com.jonuy.cyoa.Constants.PageType;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -39,6 +36,7 @@ public class BasePage extends Activity {
 	
 	protected void setPageContent() {
 		Typeface fontHVD = Typeface.createFromAsset(getAssets(), "fonts/HVD_Comic_Serif_Pro.otf");
+		Typeface fontRoboto = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
 		
 		Constants.PageType pageType = currentPage.getPageType();
 		
@@ -51,8 +49,9 @@ public class BasePage extends Activity {
 			tvHeader.setTypeface(fontHVD);
 			
 			TextView tvText = (TextView)findViewById(R.id.text);
-			tvText.setText(currentPage.getText());
-			tvText.setTypeface(fontHVD);
+			tvText.setText(unescape(currentPage.getText()));
+			tvText.setTypeface(fontRoboto);
+			
 			
 			LinearLayout llChoices = (LinearLayout)findViewById(R.id.choice_container);
 			UserChoiceClickListener ucClickListener = new UserChoiceClickListener();
@@ -60,6 +59,7 @@ public class BasePage extends Activity {
 				UserChoice uc = currentPage.getUserChoiceByIndex(i);
 				
 				Button button = new Button(this);
+				button.setTextAppearance(this, R.style.UserChoiceButton);
 				button.setText(uc.getText());
 				button.setTypeface(fontHVD);
 				button.setId(uc.getPageId());
@@ -80,7 +80,7 @@ public class BasePage extends Activity {
 		if (pageType == Constants.PageType.STANDARD
 			|| pageType == Constants.PageType.STANDARD_IMAGE) {
 			
-			overridePendingTransition(R.anim.slide_in_left_accelerate_decelerate, R.anim.slide_out_left_accelerate_decelerate);
+			overridePendingTransition(R.anim.slide_in_left_overshoot, R.anim.slide_out_left_overshoot);
 		}
 		else if (pageType == Constants.PageType.CHOICE
 				|| pageType == Constants.PageType.CHOICE_IMAGE
@@ -92,6 +92,11 @@ public class BasePage extends Activity {
 	
 	protected void goPreviousPage() {
 		// Refer to user's history and go back to previous page
+	}
+	
+	private String unescape(String val) {
+		// Unescape new line characters being pulled from resource files
+		return val.replaceAll("\\\\n", "\\\n");
 	}
 	
 	public static Intent getNewIntent(Context _ctx, Story _story, int _pageId) {
