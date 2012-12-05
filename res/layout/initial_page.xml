@@ -5,12 +5,13 @@
     android:orientation="vertical" >
     
     <Button
+        android:id="@+id/btnStart"
         android:onClick="beginStory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="LET'S BEGIN"
-        android:textSize="20dp" />
+        android:textSize="20sp" />
     
 
 </RelativeLayout>
