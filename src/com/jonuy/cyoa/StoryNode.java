@@ -10,7 +10,8 @@ public class StoryNode implements Serializable {
 	private static final long serialVersionUID = Constants.SerialVersionUID.STORY_NODE;
 	private int choiceTime;
 	private String header;
-	private String[] images;
+	private String image;
+	private String imageDescription;
 	private int pageId;
 	private int numChoices;
 	private Constants.PageType pageType;
@@ -24,18 +25,19 @@ public class StoryNode implements Serializable {
 		pageType = translatePageType(csvLine[1]);
 		header = csvLine[2];
 		text = csvLine[3];
-		images = separateBySemicolons(csvLine[4]);
+		image = csvLine[4];
+		imageDescription = csvLine[5];
 		
-		numChoices = Integer.parseInt(csvLine[5]);
-		String[] choicesTexts = separateBySemicolons(csvLine[6]);
-		String[] choiceDestinations = separateBySemicolons(csvLine[7]); 
+		numChoices = Integer.parseInt(csvLine[6]);
+		String[] choicesTexts = separateBySemicolons(csvLine[7]);
+		String[] choiceDestinations = separateBySemicolons(csvLine[8]); 
 		userChoices = new ArrayList<UserChoice>();
 		for (int i = 0; i < numChoices; i++) {
 			UserChoice uc = new UserChoice(Integer.parseInt(choiceDestinations[i]), choicesTexts[i]);
 			userChoices.add(uc);
 		}
 		
-		choiceTime = csvLine[8].length() > 0 ? Integer.parseInt(csvLine[8]) : 0;
+		choiceTime = csvLine[9].length() > 0 ? Integer.parseInt(csvLine[9]) : 0;
 	}
 	
 	public int getChoiceTime() {
@@ -46,8 +48,12 @@ public class StoryNode implements Serializable {
 		return header;
 	}
 	
-	public String[] getImages() {
-		return images;
+	public String getImage() {
+		return image;
+	}
+	
+	public String getImageDescription() {
+		return imageDescription;
 	}
 	
 	public int getPageId() {
@@ -114,11 +120,6 @@ public class StoryNode implements Serializable {
 	
 	@Override
 	public String toString() {
-		String imagesString = "";
-		for (int i = 0; i < images.length; i++) {
-			imagesString += images[i] + ";";
-		}
-		
 		String choicesString = "";
 		Iterator<UserChoice> ucIter = userChoices.iterator();
 		while (ucIter.hasNext()) {
@@ -130,7 +131,7 @@ public class StoryNode implements Serializable {
 				+ " - type = " + pageType + "\n"
 				+ " - header = " + header + "\n"
 				+ " - text = " + text + "\n"
-				+ " - images = " + imagesString + "\n"
+				+ " - images = " + image + "\n"
 				+ " - numChoices = " + numChoices + "\n"
 				+ " - choices = " + choicesString + "\n"
 				+ " - choiceTime = " + choiceTime + "\n";

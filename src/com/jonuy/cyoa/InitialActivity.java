@@ -17,9 +17,9 @@ public class InitialActivity extends Activity {
 		setContentView(R.layout.initial_page);
 		
 		try {
-			InputStream is = getAssets().open("story_data/test-story.csv");
+			InputStream is = getAssets().open(Constants.STORY_DATA_FOLDER + "test-story.csv");
 			
-			selectedStory = new Story();
+			selectedStory = new Story("test-story");
 			selectedStory.loadStory(is);
 		}
 		catch (IOException e) {

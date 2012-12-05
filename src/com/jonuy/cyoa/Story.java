@@ -13,10 +13,13 @@ public class Story implements Serializable {
 	
 	private static final long serialVersionUID = Constants.SerialVersionUID.STORY;
 	
+	private String name;
+	
 	// TODO: eventually will want to store pages into a Tree-like structure
 	private List<StoryNode> pages;
 	
-	public Story() {
+	public Story(String _name) {
+		name = _name;
 		pages = new ArrayList<StoryNode>();
 	}
 	
@@ -59,4 +62,9 @@ public class Story implements Serializable {
 	public StoryNode getFirstPage() {
 		return getPage(getFirstPageId());
 	}
+	
+	public String getName() {
+		return name;
+	}
+	
 }

@@ -1,6 +1,7 @@
 <resources>
 
 <string name="app_name">cyoa</string>
+<string name="btn_end">The End</string>
 <string name="error_page_msg">If you see this message, there was an error loading the page\'s contents.</string>
 
 </resources>

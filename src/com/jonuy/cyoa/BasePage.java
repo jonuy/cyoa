@@ -1,13 +1,19 @@
 package com.jonuy.cyoa;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -52,6 +58,43 @@ public class BasePage extends Activity {
 			tvText.setText(unescape(currentPage.getText()));
 			tvText.setTypeface(fontRoboto);
 			
+			LinearLayout llChoices = (LinearLayout)findViewById(R.id.choice_container);
+			UserChoiceClickListener ucClickListener = new UserChoiceClickListener();
+			for (int i = 0; i < currentPage.getNumChoices(); i++) {
+				UserChoice uc = currentPage.getUserChoiceByIndex(i);
+				
+				Button button = new Button(this);
+				button.setTextAppearance(this, R.style.UserChoiceButton);
+				button.setText(uc.getText());
+				button.setTypeface(fontHVD);
+				button.setId(uc.getPageId());
+				button.setOnClickListener(ucClickListener);
+				llChoices.addView(button);
+			}
+		}
+		else if (pageType == Constants.PageType.STANDARD_IMAGE
+			|| pageType == Constants.PageType.CHOICE_IMAGE) {
+			setContentView(R.layout.image_page);
+			
+			TextView tvHeader = (TextView)findViewById(R.id.header);
+			tvHeader.setText(currentPage.getHeader());
+			tvHeader.setTypeface(fontHVD);
+			
+			TextView tvText = (TextView)findViewById(R.id.text);
+			tvText.setText(unescape(currentPage.getText()));
+			tvText.setTypeface(fontRoboto);
+			
+			ImageView ivImage = (ImageView)findViewById(R.id.image);
+			ivImage.setContentDescription(currentPage.getImageDescription());
+			try {
+				String imgFilename = Constants.STORY_DATA_FOLDER + story.getName() + "/" + currentPage.getImage();
+				InputStream is = getAssets().open(imgFilename);
+				Bitmap bmp = BitmapFactory.decodeStream(is);
+				ivImage.setImageBitmap(bmp);
+			}
+			catch (IOException e) {
+				ivImage.setVisibility(View.GONE);
+			}
 			
 			LinearLayout llChoices = (LinearLayout)findViewById(R.id.choice_container);
 			UserChoiceClickListener ucClickListener = new UserChoiceClickListener();
@@ -66,6 +109,33 @@ public class BasePage extends Activity {
 				button.setOnClickListener(ucClickListener);
 				llChoices.addView(button);
 			}
+		}
+		else if (pageType == Constants.PageType.END) {
+			setContentView(R.layout.end_page);
+			
+			TextView tvHeader = (TextView)findViewById(R.id.header);
+			tvHeader.setText(currentPage.getHeader());
+			tvHeader.setTypeface(fontHVD);
+			
+			TextView tvText = (TextView)findViewById(R.id.text);
+			tvText.setText(unescape(currentPage.getText()));
+			tvText.setTypeface(fontRoboto);
+			
+			ImageView ivImage = (ImageView)findViewById(R.id.image);
+			ivImage.setContentDescription(currentPage.getImageDescription());
+			try {
+				String imgFilename = Constants.STORY_DATA_FOLDER + story.getName() + "/" + currentPage.getImage();
+				InputStream is = getAssets().open(imgFilename);
+				Bitmap bmp = BitmapFactory.decodeStream(is);
+				ivImage.setImageBitmap(bmp);
+			}
+			catch (IOException e) {
+				ivImage.setVisibility(View.GONE);
+			}
+			
+			Button endButton = (Button)findViewById(R.id.endButton);
+			endButton.setTypeface(fontHVD);
+			endButton.setOnClickListener(new OnEndClickListener());
 		}
 	}
 	
@@ -112,6 +182,13 @@ public class BasePage extends Activity {
 		public void onClick(View view) {
 			int nextPageId = view.getId();
 			goNextPage(nextPageId);
+		}
+	}
+	
+	private class OnEndClickListener implements OnClickListener {
+		@Override
+		public void onClick(View view) {
+			startActivity(new Intent(view.getContext(), InitialActivity.class));
 		}
 	}
 }

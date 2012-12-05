@@ -2,6 +2,8 @@ package com.jonuy.cyoa;
 
 public final class Constants {
 	
+	public static String STORY_DATA_FOLDER = "story_data/";
+	
 	public static enum PageType {
 		STANDARD,
 		STANDARD_IMAGE,
