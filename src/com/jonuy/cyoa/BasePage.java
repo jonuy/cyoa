@@ -41,8 +41,6 @@ public class BasePage extends Activity {
 	}
 	
 	protected void setPageContent() {
-		Typeface fontHVD = Typeface.createFromAsset(getAssets(), "fonts/HVD_Comic_Serif_Pro.otf");
-		Typeface fontRoboto = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
 		
 		Constants.PageType pageType = currentPage.getPageType();
 		
@@ -50,39 +48,17 @@ public class BasePage extends Activity {
 			|| pageType == Constants.PageType.CHOICE) {
 			setContentView(R.layout.standard_page);
 			
-			TextView tvHeader = (TextView)findViewById(R.id.header);
-			tvHeader.setText(currentPage.getHeader());
-			tvHeader.setTypeface(fontHVD);
+			setHeaderText();
+			setBodyText();
 			
-			TextView tvText = (TextView)findViewById(R.id.text);
-			tvText.setText(unescape(currentPage.getText()));
-			tvText.setTypeface(fontRoboto);
-			
-			LinearLayout llChoices = (LinearLayout)findViewById(R.id.choice_container);
-			UserChoiceClickListener ucClickListener = new UserChoiceClickListener();
-			for (int i = 0; i < currentPage.getNumChoices(); i++) {
-				UserChoice uc = currentPage.getUserChoiceByIndex(i);
-				
-				Button button = new Button(this);
-				button.setTextAppearance(this, R.style.UserChoiceButton);
-				button.setText(uc.getText());
-				button.setTypeface(fontHVD);
-				button.setId(uc.getPageId());
-				button.setOnClickListener(ucClickListener);
-				llChoices.addView(button);
-			}
+			createUserChoiceButtons();
 		}
 		else if (pageType == Constants.PageType.STANDARD_IMAGE
 			|| pageType == Constants.PageType.CHOICE_IMAGE) {
 			setContentView(R.layout.image_page);
 			
-			TextView tvHeader = (TextView)findViewById(R.id.header);
-			tvHeader.setText(currentPage.getHeader());
-			tvHeader.setTypeface(fontHVD);
-			
-			TextView tvText = (TextView)findViewById(R.id.text);
-			tvText.setText(unescape(currentPage.getText()));
-			tvText.setTypeface(fontRoboto);
+			setHeaderText();
+			setBodyText();
 			
 			ImageView ivImage = (ImageView)findViewById(R.id.image);
 			ivImage.setContentDescription(currentPage.getImageDescription());
@@ -96,30 +72,13 @@ public class BasePage extends Activity {
 				ivImage.setVisibility(View.GONE);
 			}
 			
-			LinearLayout llChoices = (LinearLayout)findViewById(R.id.choice_container);
-			UserChoiceClickListener ucClickListener = new UserChoiceClickListener();
-			for (int i = 0; i < currentPage.getNumChoices(); i++) {
-				UserChoice uc = currentPage.getUserChoiceByIndex(i);
-				
-				Button button = new Button(this);
-				button.setTextAppearance(this, R.style.UserChoiceButton);
-				button.setText(uc.getText());
-				button.setTypeface(fontHVD);
-				button.setId(uc.getPageId());
-				button.setOnClickListener(ucClickListener);
-				llChoices.addView(button);
-			}
+			createUserChoiceButtons();
 		}
 		else if (pageType == Constants.PageType.END) {
 			setContentView(R.layout.end_page);
 			
-			TextView tvHeader = (TextView)findViewById(R.id.header);
-			tvHeader.setText(currentPage.getHeader());
-			tvHeader.setTypeface(fontHVD);
-			
-			TextView tvText = (TextView)findViewById(R.id.text);
-			tvText.setText(unescape(currentPage.getText()));
-			tvText.setTypeface(fontRoboto);
+			setHeaderText();
+			setBodyText();
 			
 			ImageView ivImage = (ImageView)findViewById(R.id.image);
 			ivImage.setContentDescription(currentPage.getImageDescription());
@@ -132,10 +91,42 @@ public class BasePage extends Activity {
 			catch (IOException e) {
 				ivImage.setVisibility(View.GONE);
 			}
-			
+
+			Typeface fontHVD = Typeface.createFromAsset(getAssets(), "fonts/HVD_Comic_Serif_Pro.otf");
 			Button endButton = (Button)findViewById(R.id.endButton);
 			endButton.setTypeface(fontHVD);
 			endButton.setOnClickListener(new OnEndClickListener());
+		}
+	}
+	
+	private void setBodyText() {
+		Typeface fontRoboto = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
+		TextView tvText = (TextView)findViewById(R.id.text);
+		tvText.setText(unescape(currentPage.getText()));
+		tvText.setTypeface(fontRoboto);
+	}
+	
+	private void setHeaderText() {
+		Typeface fontHVD = Typeface.createFromAsset(getAssets(), "fonts/HVD_Comic_Serif_Pro.otf");
+		TextView tvHeader = (TextView)findViewById(R.id.header);
+		tvHeader.setText(currentPage.getHeader());
+		tvHeader.setTypeface(fontHVD);
+	}
+	
+	private void createUserChoiceButtons() {
+		Typeface fontHVD = Typeface.createFromAsset(getAssets(), "fonts/HVD_Comic_Serif_Pro.otf");
+		LinearLayout llChoices = (LinearLayout)findViewById(R.id.choice_container);
+		UserChoiceClickListener ucClickListener = new UserChoiceClickListener();
+		for (int i = 0; i < currentPage.getNumChoices(); i++) {
+			UserChoice uc = currentPage.getUserChoiceByIndex(i);
+			
+			Button button = new Button(this);
+			button.setTextAppearance(this, R.style.UserChoiceButton);
+			button.setText(uc.getText());
+			button.setTypeface(fontHVD);
+			button.setId(uc.getPageId());
+			button.setOnClickListener(ucClickListener);
+			llChoices.addView(button);
 		}
 	}
 	
