@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
     
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-        
-        <TextView
-            android:id="@+id/header"
-            style="@style/StoryHeader" />
-        
-        <TextView 
+    <TextView
+        android:id="@+id/header"
+        style="@style/StoryHeader"
+        android:layout_alignParentTop="true" />
+    
+    <LinearLayout 
+		android:id="@+id/choice_container"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:layout_alignParentBottom="true" />
+    
+	<ScrollView 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_above="@id/choice_container"
+	    android:layout_below="@id/header" >
+	    
+	    <TextView 
             android:id="@+id/text"
             style="@style/StoryText" />
-        
-        <LinearLayout 
-            android:id="@+id/choice_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-        
-    </LinearLayout>
-
-</ScrollView>
+	
+	</ScrollView>
+	
+</RelativeLayout>
