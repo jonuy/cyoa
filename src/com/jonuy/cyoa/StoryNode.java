@@ -8,14 +8,23 @@ import java.util.List;
 public class StoryNode implements Serializable {
 	
 	private static final long serialVersionUID = Constants.SerialVersionUID.STORY_NODE;
+	// Time to make a choice in seconds
 	private int choiceTime;
+	// Header at the top of the page
 	private String header;
+	// Filename of image to display
 	private String image;
+	// Image description primarily used for accessibility
 	private String imageDescription;
+	// Unique page identifier
 	private int pageId;
+	// Number of user choices available for this page
 	private int numChoices;
+	// Denotes page's type
 	private Constants.PageType pageType;
+	// Main body text
 	private String text;
+	// List of choice objects defining text and destination for user choices
 	private List<UserChoice> userChoices;
 	
 	public StoryNode() {}

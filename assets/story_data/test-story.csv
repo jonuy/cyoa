@@ -4,4 +4,5 @@
 3,choice,Choice 3,Choice 3 Text,,,2,"Yes, let's go;No, that's foolish",4;5,
 4,standard-image,Standard 4,Standard 4 Text,bully_test.jpg,"Bully Image Content Description 1",1,Go,6,
 5,standard-image,Standard 5,Standard 5 Text,bully_test_2.jpg,"Bully Image Content Description 2",1,Go,6,
+6,choice-time,Time Me!,Decide! Decide! Decide!,bully_test.jpg,"Bully Img Content Description",3,Option 1;Option 2;Option 3,6;6;6,10
 6,end,End,End Page Text,,,0,,,

@@ -8,8 +8,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -21,11 +23,17 @@ public class BasePage extends Activity {
 	
 	private Story story;
 	private StoryNode currentPage;
+	
+	private Typeface fontHVD;
+	private Typeface fontRoboto;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.error_page);
+		
+		fontHVD = Typeface.createFromAsset(getAssets(), "fonts/HVD_Comic_Serif_Pro.otf");
+		fontRoboto = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
 		
 		int currentPageId = 0;
 		Bundle extras = getIntent().getExtras();
@@ -50,7 +58,6 @@ public class BasePage extends Activity {
 			
 			setHeaderText();
 			setBodyText();
-			
 			createUserChoiceButtons();
 		}
 		else if (pageType == Constants.PageType.STANDARD_IMAGE
@@ -59,40 +66,28 @@ public class BasePage extends Activity {
 			
 			setHeaderText();
 			setBodyText();
-			
-			ImageView ivImage = (ImageView)findViewById(R.id.image);
-			ivImage.setContentDescription(currentPage.getImageDescription());
-			try {
-				String imgFilename = Constants.STORY_DATA_FOLDER + story.getName() + "/" + currentPage.getImage();
-				InputStream is = getAssets().open(imgFilename);
-				Bitmap bmp = BitmapFactory.decodeStream(is);
-				ivImage.setImageBitmap(bmp);
-			}
-			catch (IOException e) {
-				ivImage.setVisibility(View.GONE);
-			}
-			
+			setImage();
 			createUserChoiceButtons();
+		}
+		else if (pageType == Constants.PageType.CHOICE_TIME) {
+			setContentView(R.layout.time_limit_page);
+			
+			setHeaderText();
+			setBodyText();
+			setImage();
+			createUserChoiceButtons();
+			
+			long timerLength = currentPage.getChoiceTime() * 1000;
+			TextView tvTimer = (TextView)findViewById(R.id.timer_text);
+			new ChoiceTimer(timerLength, tvTimer).start();
 		}
 		else if (pageType == Constants.PageType.END) {
 			setContentView(R.layout.end_page);
 			
 			setHeaderText();
 			setBodyText();
-			
-			ImageView ivImage = (ImageView)findViewById(R.id.image);
-			ivImage.setContentDescription(currentPage.getImageDescription());
-			try {
-				String imgFilename = Constants.STORY_DATA_FOLDER + story.getName() + "/" + currentPage.getImage();
-				InputStream is = getAssets().open(imgFilename);
-				Bitmap bmp = BitmapFactory.decodeStream(is);
-				ivImage.setImageBitmap(bmp);
-			}
-			catch (IOException e) {
-				ivImage.setVisibility(View.GONE);
-			}
+			setImage();
 
-			Typeface fontHVD = Typeface.createFromAsset(getAssets(), "fonts/HVD_Comic_Serif_Pro.otf");
 			Button endButton = (Button)findViewById(R.id.endButton);
 			endButton.setTypeface(fontHVD);
 			endButton.setOnClickListener(new OnEndClickListener());
@@ -100,21 +95,36 @@ public class BasePage extends Activity {
 	}
 	
 	private void setBodyText() {
-		Typeface fontRoboto = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
 		TextView tvText = (TextView)findViewById(R.id.text);
 		tvText.setText(unescape(currentPage.getText()));
 		tvText.setTypeface(fontRoboto);
 	}
 	
 	private void setHeaderText() {
-		Typeface fontHVD = Typeface.createFromAsset(getAssets(), "fonts/HVD_Comic_Serif_Pro.otf");
 		TextView tvHeader = (TextView)findViewById(R.id.header);
 		tvHeader.setText(currentPage.getHeader());
 		tvHeader.setTypeface(fontHVD);
 	}
 	
+	private void setImage() {
+		if (currentPage.getImage().isEmpty()) {
+			return;
+		}
+		
+		ImageView ivImage = (ImageView)findViewById(R.id.image);
+		ivImage.setContentDescription(currentPage.getImageDescription());
+		try {
+			String imgFilename = Constants.STORY_DATA_FOLDER + story.getName() + "/" + currentPage.getImage();
+			InputStream is = getAssets().open(imgFilename);
+			Bitmap bmp = BitmapFactory.decodeStream(is);
+			ivImage.setImageBitmap(bmp);
+		}
+		catch (IOException e) {
+			ivImage.setVisibility(View.GONE);
+		}
+	}
+	
 	private void createUserChoiceButtons() {
-		Typeface fontHVD = Typeface.createFromAsset(getAssets(), "fonts/HVD_Comic_Serif_Pro.otf");
 		LinearLayout llChoices = (LinearLayout)findViewById(R.id.choice_container);
 		UserChoiceClickListener ucClickListener = new UserChoiceClickListener();
 		for (int i = 0; i < currentPage.getNumChoices(); i++) {
@@ -166,6 +176,37 @@ public class BasePage extends Activity {
 		intent.putExtra(Constants.BundleId.PAGE_ID, _pageId);
 		
 		return intent;
+	}
+	
+	private class ChoiceTimer extends CountDownTimer {
+		private static final long tickInterval = 1000;
+		private static final int warningTime = 6;
+		
+		private boolean toggledWarning = false;
+		private TextView tvTimer;
+		
+		public ChoiceTimer(long _timerLength, TextView _tvTimer) {
+			super(_timerLength, tickInterval);
+			tvTimer = _tvTimer;
+			tvTimer.setTypeface(fontHVD);
+		}
+		
+		@Override
+		public void onTick(long millisUntilFinished) {
+			long secondsUntilFinished = millisUntilFinished / 1000;
+			tvTimer.setText(getString(R.string.choice_page_timer, Long.toString(secondsUntilFinished)));
+			
+			if (secondsUntilFinished < warningTime && !toggledWarning) {
+				tvTimer.setTextColor(Color.RED);
+				toggledWarning = true;
+			}
+		}
+		
+		@Override
+		public void onFinish() {
+			// TODO randomly choose an option?
+			tvTimer.setText("done!");
+		}
 	}
 	
 	private class UserChoiceClickListener implements OnClickListener {
