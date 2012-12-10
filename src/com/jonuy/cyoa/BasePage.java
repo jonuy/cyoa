@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -47,8 +48,14 @@ public class BasePage extends Activity {
 		
 		if (story != null && currentPageId > 0) {
 			currentPage = story.getPage(currentPageId);
-			setPageContent();
 		}
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		setPageContent();
 	}
 	
 	@Override
@@ -134,6 +141,12 @@ public class BasePage extends Activity {
 	}
 	
 	private void createUserChoiceButtons() {
+		int previousChoiceIndex = -1;
+		HistoryItem historyItem = userHistory.findItemForPageId(currentPage.getPageId());
+		if (historyItem != null) {
+			previousChoiceIndex = historyItem.getUserChoiceIndex();
+		}
+		
 		LinearLayout llChoices = (LinearLayout)findViewById(R.id.choice_container);
 		UserChoiceClickListener ucClickListener = new UserChoiceClickListener();
 		for (int i = 0; i < currentPage.getNumChoices(); i++) {
@@ -145,6 +158,11 @@ public class BasePage extends Activity {
 			button.setTypeface(fontHVD);
 			button.setId(i);
 			button.setOnClickListener(ucClickListener);
+			
+			if (i == previousChoiceIndex) {
+				button.setTextColor(Color.MAGENTA);
+			}
+			
 			llChoices.addView(button);
 		}
 	}

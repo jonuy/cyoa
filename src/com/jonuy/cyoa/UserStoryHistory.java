@@ -2,6 +2,7 @@ package com.jonuy.cyoa;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.pig.impl.util.ObjectSerializer;
@@ -61,6 +62,17 @@ public class UserStoryHistory {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public HistoryItem findItemForPageId(int pageId) {
+		for (Iterator<HistoryItem> iter = history.iterator(); iter.hasNext();) {
+			HistoryItem item = iter.next();
+			if (pageId == item.getPageId()) {
+				return item;
+			}
+		}
+		
+		return null;
 	}
 	
 	public void clearHistory() {
