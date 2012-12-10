@@ -9,6 +9,7 @@ import org.apache.pig.impl.util.ObjectSerializer;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.util.Log;
 
 public class UserStoryHistory {
 
@@ -16,12 +17,13 @@ public class UserStoryHistory {
 	
 	private Context context;
 	private List<HistoryItem> history;
+	private SharedPreferences sharedPrefs;
 	
 	public UserStoryHistory(Context _context) {
 		context = _context;
 		
 		// Load user's history if found in SharedPreferences
-		SharedPreferences sharedPrefs = context.getSharedPreferences(Constants.CYOA_PREFERENCES, Context.MODE_PRIVATE);
+		sharedPrefs = context.getSharedPreferences(Constants.CYOA_PREFERENCES, Context.MODE_PRIVATE);
 		String storedHistory = sharedPrefs.getString(STORY_HISTORY, null);
 		if (storedHistory != null) {
 			try {
@@ -39,6 +41,7 @@ public class UserStoryHistory {
 	public void addHistory(int pageId, int userChoiceIndex) {
 		int prevPageId = -1;
 		
+		// Set nextPageId property of last saved HistoryItem
 		if (history.size() > 0) {
 			int lastItemIdx = history.size() - 1;
 			HistoryItem lastItem = history.get(lastItemIdx);
@@ -46,11 +49,11 @@ public class UserStoryHistory {
 			lastItem.setNextPageId(pageId);
 		}
 		
+		// Then add the new item to the array
 		HistoryItem item = new HistoryItem(pageId, userChoiceIndex, prevPageId);
 		history.add(item);
 		
 		try {
-			SharedPreferences sharedPrefs = context.getSharedPreferences(Constants.CYOA_PREFERENCES, Context.MODE_PRIVATE);
 			Editor editor = sharedPrefs.edit();
 			editor.putString(STORY_HISTORY, ObjectSerializer.serialize((ArrayList<HistoryItem>)history));
 			editor.commit();
@@ -58,5 +61,11 @@ public class UserStoryHistory {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void clearHistory() {
+		Editor editor = sharedPrefs.edit();
+		editor.clear();
+		editor.commit();
 	}
 }

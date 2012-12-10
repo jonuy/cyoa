@@ -35,4 +35,11 @@ public class HistoryItem implements Serializable {
 	public void setNextPageId(int _nextPageId) {
 		nextPageId = _nextPageId;
 	}
+	
+	public String toDebugString() {
+		return "pageId: " + pageId
+				+ " / previousPageId: " + previousPageId
+				+ " / nextPageId: " + nextPageId
+				+ " / userChoiceIndex: " + userChoiceIndex;
+	}
 }

@@ -11,7 +11,7 @@ import android.widget.Button;
 
 public class InitialActivity extends Activity {
 	
-	Story selectedStory;
+	private Story selectedStory;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +34,9 @@ public class InitialActivity extends Activity {
 	}
 	
 	public void beginStory(View v) {
+		UserStoryHistory userHistory = new UserStoryHistory(this);
+		userHistory.clearHistory();
+		
 		startActivity(BasePage.getNewIntent(this, selectedStory, selectedStory.getFirstPageId()));
 	}
 }
