@@ -26,6 +26,8 @@ public class BasePage extends Activity {
 	
 	private Typeface fontHVD;
 	private Typeface fontRoboto;
+	
+	private UserStoryHistory userHistory;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,7 @@ public class BasePage extends Activity {
 		
 		fontHVD = Typeface.createFromAsset(getAssets(), "fonts/HVD_Comic_Serif_Pro.otf");
 		fontRoboto = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
+		userHistory = new UserStoryHistory(this);
 		
 		int currentPageId = 0;
 		Bundle extras = getIntent().getExtras();
@@ -46,6 +49,12 @@ public class BasePage extends Activity {
 			currentPage = story.getPage(currentPageId);
 			setPageContent();
 		}
+	}
+	
+	@Override
+	public void onBackPressed() {
+		// TODO eventually want to use goPreviousPage() and override animations
+		super.onBackPressed();
 	}
 	
 	protected void setPageContent() {
@@ -134,7 +143,7 @@ public class BasePage extends Activity {
 			button.setTextAppearance(this, R.style.UserChoiceButton);
 			button.setText(uc.getText());
 			button.setTypeface(fontHVD);
-			button.setId(uc.getPageId());
+			button.setId(i);
 			button.setOnClickListener(ucClickListener);
 			llChoices.addView(button);
 		}
@@ -142,8 +151,8 @@ public class BasePage extends Activity {
 	
 	protected void goNextPage(int nextPageId) {
 		startActivity(BasePage.getNewIntent(this, story, nextPageId));
-		
 		overrideAnimation(currentPage.getPageType());
+		
 		// TODO: end old activities
 	}
 	
@@ -212,7 +221,11 @@ public class BasePage extends Activity {
 	private class UserChoiceClickListener implements OnClickListener {
 		@Override
 		public void onClick(View view) {
-			int nextPageId = view.getId();
+			int ucIndex = view.getId();
+			UserChoice uc = currentPage.getUserChoiceByIndex(ucIndex);
+			int nextPageId = uc.getPageId();
+			
+			userHistory.addHistory(currentPage.getPageId(), ucIndex);
 			goNextPage(nextPageId);
 		}
 	}

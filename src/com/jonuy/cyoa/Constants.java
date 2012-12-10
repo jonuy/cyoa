@@ -3,6 +3,7 @@ package com.jonuy.cyoa;
 public final class Constants {
 	
 	public static String STORY_DATA_FOLDER = "story_data/";
+	public static String CYOA_PREFERENCES = "cyoa_preferences";
 	
 	public static enum PageType {
 		STANDARD,
@@ -22,6 +23,7 @@ public final class Constants {
 		public static long STORY = 1L;
 		public static long STORY_NODE = 2L;
 		public static long USER_CHOICE = 3L;
+		public static long HISTORY_ITEM = 4L;
 	}
 
 	private Constants() {
