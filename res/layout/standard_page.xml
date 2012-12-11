@@ -21,9 +21,9 @@
 	    android:layout_above="@id/choice_container"
 	    android:layout_below="@id/header" >
 	    
-	    <TextView 
-            android:id="@+id/text"
-            style="@style/StoryText" />
+	    <TextView
+			android:id="@+id/text"
+			style="@style/StoryText" />
 	
 	</ScrollView>
 	

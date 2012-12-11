@@ -2,6 +2,9 @@ package com.jonuy.cyoa;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,7 +15,8 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -20,13 +24,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.jonuy.util.CustomTypefaceSpan;
+
 public class BasePage extends Activity {
 	
 	private Story story;
 	private StoryNode currentPage;
 	
+	private Typeface fontDroidMono;
 	private Typeface fontHVD;
 	private Typeface fontRoboto;
+	private CustomTypefaceSpan fontDroidMonoSpan;
+	private CustomTypefaceSpan fontRobotoSpan;
 	
 	private UserStoryHistory userHistory;
 
@@ -35,8 +44,12 @@ public class BasePage extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.error_page);
 		
+		fontDroidMono = Typeface.createFromAsset(getAssets(), "fonts/DroidSansMono-webfont.ttf");
 		fontHVD = Typeface.createFromAsset(getAssets(), "fonts/HVD_Comic_Serif_Pro.otf");
 		fontRoboto = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
+		fontDroidMonoSpan = new CustomTypefaceSpan("monospace", fontDroidMono);
+		fontRobotoSpan = new CustomTypefaceSpan("sans-serif", fontRoboto);
+		
 		userHistory = new UserStoryHistory(this);
 		
 		int currentPageId = 0;
@@ -111,9 +124,78 @@ public class BasePage extends Activity {
 	}
 	
 	private void setBodyText() {
+		String bodyText = unescape(currentPage.getText());
+		List<SpanTextRange> spanRanges = new ArrayList<SpanTextRange>(); 
+		
+		int currentIdx = 0;
+		boolean finished = false;
+		// Parse through text and get ranges of characters and decide what font it should use
+		while (finished == false) {
+			int monoMarkupIdx = bodyText.indexOf("<mono>", currentIdx); 
+			
+			// Add range for the mono markup  
+			if (monoMarkupIdx == currentIdx) {
+				// find matching </mono> and use mono font
+				int endMonoMarkupIdx = bodyText.indexOf("</mono>", currentIdx);
+				bodyText = bodyText.substring(0, monoMarkupIdx) 
+						+ bodyText.substring(monoMarkupIdx + "<mono>".length(), endMonoMarkupIdx)
+						+ bodyText.substring(endMonoMarkupIdx + "</mono>".length(), bodyText.length());
+				
+				int newEndMono = endMonoMarkupIdx - "<mono>".length();
+				spanRanges.add(new SpanTextRange(currentIdx, newEndMono, "monospace")); 
+				
+				currentIdx = endMonoMarkupIdx;
+			}
+			// Still a body of text before the mono markup
+			else if (monoMarkupIdx > 0) {
+				// set text with normal font
+				spanRanges.add(new SpanTextRange(currentIdx, monoMarkupIdx, "sans-serif"));
+				currentIdx = monoMarkupIdx;
+			}
+			// indexOf will return -1 if no match is found
+			else {
+				spanRanges.add(new SpanTextRange(currentIdx, bodyText.length(), "sans-serif"));
+				finished = true;
+			}
+		}
+		
+		// Using ranges found, set font depending on font family each span is set to.           
+		Spannable spanText = new SpannableString(bodyText);
+		for(Iterator<SpanTextRange> iter = spanRanges.iterator(); iter.hasNext();) {
+			SpanTextRange range = iter.next();
+			CustomTypefaceSpan font = fontRobotoSpan;
+			if (range.getFontFamily().compareTo("monospace") == 0) {
+				font = fontDroidMonoSpan;
+			}
+			spanText.setSpan(font, range.getStartIndex(), range.getEndIndex(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+		}
+		
 		TextView tvText = (TextView)findViewById(R.id.text);
-		tvText.setText(unescape(currentPage.getText()));
-		tvText.setTypeface(fontRoboto);
+		tvText.setText(spanText);
+	}
+	
+	private class SpanTextRange {
+		private int startIndex;
+		private int endIndex;
+		private String fontFamily;
+		
+		public SpanTextRange(int _start, int _end, String _font) {
+			startIndex = _start;
+			endIndex = _end;
+			fontFamily = _font;
+		}
+		
+		public int getStartIndex() {
+			return startIndex;
+		}
+		
+		public int getEndIndex() {
+			return endIndex;
+		}
+		
+		public String getFontFamily() {
+			return fontFamily;
+		}
 	}
 	
 	private void setHeaderText() {
